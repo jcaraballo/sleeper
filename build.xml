@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<project name="Sleeper" default="start" basedir=".">
+    <property name="src/java" value="${basedir}/src/java"/>
+    <property name="src/test-acceptance" value="${basedir}/src/test-acceptance"/>
+    <property name="build" value="${basedir}/build"/>
+    <property name="results" value="${build}/results"/>
+    <property name="build/main" value="${build}/classes/main"/>
+    <property name="build/test-acceptance" value="${build}/classes/test-acceptance"/>
+
+    <path id="main-dependencies">
+        <fileset dir="${basedir}/libs">
+            <include name="**/*.jar"/>
+        </fileset>
+    </path>
+
+    <path id="main">
+        <path refid="main-dependencies"/>
+        <pathelement location="${build/main}"/>
+    </path>
+
+    <path id="test-dependencies">
+        <path refid="main"/>
+        <fileset dir="${basedir}/test-libs">
+            <include name="**/*.jar"/>
+        </fileset>
+    </path>
+
+    <path id="test">
+        <path refid="test-dependencies"/>
+        <pathelement location="${build/test-acceptance}"/>
+    </path>
+
+    <target name="compile-java" depends="clean">
+        <sequential>
+            <mkdir dir="${build/main}"/>
+            <javac srcdir="${src/java}" destdir="${build/main}" debug="true" source="1.6"
+                   classpathref="main-dependencies" includeantruntime="false"/>
+        </sequential>
+    </target>
+
+    <target name="compile-test-acceptance" depends="compile-java">
+        <sequential>
+            <mkdir dir="${build/test-acceptance}"/>
+            <javac srcdir="${src/test-acceptance}" destdir="${build/test-acceptance}" debug="true" source="1.6"
+                   classpathref="test-dependencies" includeantruntime="false"/>
+        </sequential>
+    </target>
+
+    <target name="produce-report-on-failure" if="test-failure">
+        <junitreport todir="${results}">
+            <fileset dir="${results}" includes="**/*.xml"/>
+            <report format="frames" todir="${results}"/>
+        </junitreport>
+        <fail if="test-failure" message="Tests failed. See ${results}/index.html"/>
+    </target>
+
+    <target name="clean">
+        <delete dir="${build}"/>
+    </target>
+
+    <target name="start" depends="clean, compile-java">
+        <java classname="server.Sleeper" fork="true">
+            <classpath refid="main"/>
+        </java>
+    </target>
+
+    <target name="test-acceptance" depends="clean, compile-test-acceptance">
+        <mkdir dir="${results}/xml/test-acceptance"/>
+        <junit fork="yes" forkmode="once" showoutput="yes" failureproperty="test-failure">
+            <classpath refid="test"/>
+            <batchtest todir="${results}/xml/test-acceptance">
+                <fileset dir="${build/test-acceptance}" includes="**/*Test.class"/>
+                <formatter type="xml"/>
+            </batchtest>
+        </junit>
+        <antcall target="produce-report-on-failure"/>
+    </target>
+
+    <target name="download-dependencies">
+        <sequential>
+            <mkdir dir="down"/>
+            <parallel>
+                <sequential>
+                    <get src="http://dist.codehaus.org/jetty/jetty-6.1.26/jetty-6.1.26.zip" dest="down/"
+                         skipexisting="true"/>
+                    <unzip src="down/jetty-6.1.26.zip" dest="down/"/>
+                    <copy file="down/jetty-6.1.26/lib/jetty-6.1.26.jar" todir="libs/jetty"/>
+                    <copy file="down/jetty-6.1.26/lib/management/jetty-management-6.1.26.jar" todir="libs/jetty"/>
+                    <copy file="down/jetty-6.1.26/lib/jetty-util-6.1.26.jar" todir="libs/jetty"/>
+                    <copy file="down/jetty-6.1.26/lib/servlet-api-2.5-20081211.jar" todir="libs/jetty"/>
+                </sequential>
+                <sequential>
+                    <get src="http://apache.mirror.rbftpnetworks.com//httpcomponents/httpclient/binary/httpcomponents-client-4.2.1-bin.zip"
+                         dest="down/" skipexisting="true"/>
+                    <unzip src="down/httpcomponents-client-4.2.1-bin.zip" dest="down/" overwrite="false"/>
+                    <copy file="down/httpcomponents-client-4.2.1/lib/httpclient-4.2.1.jar" todir="test-libs"/>
+                    <copy file="down/httpcomponents-client-4.2.1/lib/httpcore-4.2.1.jar" todir="test-libs"/>
+                    <copy file="down/httpcomponents-client-4.2.1/lib/commons-logging-1.1.1.jar" todir="test-libs"/>
+
+                    <!-- sources from maven central -->
+                    <get src="http://search.maven.org/remotecontent?filepath=org/apache/httpcomponents/httpclient/4.2.1/httpclient-4.2.1-sources.jar"
+                         dest="down/httpclient-4.2.1-sources.jar" skipexisting="true"/>
+                    <copy file="down/httpclient-4.2.1-sources.jar" todir="test-libs" />
+                    <get src="http://search.maven.org/remotecontent?filepath=org/apache/httpcomponents/httpcore/4.2.1/httpcore-4.2.1-sources.jar"
+                         dest="down/httpcore-4.2.1-sources.jar" skipexisting="true" />
+                    <copy file="down/httpcore-4.2.1-sources.jar" todir="test-libs" />
+                </sequential>
+                <sequential>
+                    <get src="https://github.com/downloads/KentBeck/junit/junit-dep-4.10.jar" dest="down" skipexisting="true"/>
+                    <copy file="down/junit-dep-4.10.jar" todir="test-libs"/>
+                    <get src="https://github.com/downloads/KentBeck/junit/junit-4.10-src.jar" dest="down" skipexisting="true"/>
+                    <copy file="down/junit-dep-4.10-src.jar" todir="test-libs"/>
+                </sequential>
+                <sequential>
+                    <get src="http://hamcrest.googlecode.com/files/hamcrest-1.3.zip" dest="down" skipexisting="true"/>
+                    <unzip src="down/hamcrest-1.3.zip" dest="down/" overwrite="false"/>
+                    <copy file="down/hamcrest-1.3/hamcrest-core-1.3.jar" todir="test-libs"/>
+                    <copy file="down/hamcrest-1.3/hamcrest-library-1.3.jar" todir="test-libs"/>
+
+                    <copy file="down/hamcrest-1.3/hamcrest-core-1.3-sources.jar" todir="test-libs"/>
+                    <copy file="down/hamcrest-1.3/hamcrest-library-1.3-sources.jar" todir="test-libs"/>
+                </sequential>
+            </parallel>
+            <delete dir="down"/>
+        </sequential>
+    </target>
+</project>

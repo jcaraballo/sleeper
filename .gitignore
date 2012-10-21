@@ -1,0 +1,8 @@
+*.iws
+build/
+out/
+
+# hand-rolled dependency management
+down/
+libs/
+test-libs/
