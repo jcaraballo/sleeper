@@ -106,13 +106,13 @@
                     <copy file="down/httpcore-4.2.1-sources.jar" todir="test-libs" />
                 </sequential>
                 <sequential>
-                    <get src="https://github.com/downloads/KentBeck/junit/junit-dep-4.10.jar" dest="down" skipexisting="true"/>
+                    <get src="http://cloud.github.com/downloads/KentBeck/junit/junit-dep-4.10.jar" dest="down/" skipexisting="true"/>
                     <copy file="down/junit-dep-4.10.jar" todir="test-libs"/>
-                    <get src="https://github.com/downloads/KentBeck/junit/junit-4.10-src.jar" dest="down" skipexisting="true"/>
-                    <copy file="down/junit-dep-4.10-src.jar" todir="test-libs"/>
+                    <get src="http://cloud.github.com/downloads/KentBeck/junit/junit-4.10-src.jar" dest="down/" skipexisting="true"/>
+                    <copy file="down/junit-4.10-src.jar" todir="test-libs"/>
                 </sequential>
                 <sequential>
-                    <get src="http://hamcrest.googlecode.com/files/hamcrest-1.3.zip" dest="down" skipexisting="true"/>
+                    <get src="http://hamcrest.googlecode.com/files/hamcrest-1.3.zip" dest="down/" skipexisting="true"/>
                     <unzip src="down/hamcrest-1.3.zip" dest="down/" overwrite="false"/>
                     <copy file="down/hamcrest-1.3/hamcrest-core-1.3.jar" todir="test-libs"/>
                     <copy file="down/hamcrest-1.3/hamcrest-library-1.3.jar" todir="test-libs"/>
