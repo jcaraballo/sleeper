@@ -33,7 +33,7 @@
     <target name="compile-java" depends="clean">
         <sequential>
             <mkdir dir="${build/main}"/>
-            <javac srcdir="${src/java}" destdir="${build/main}" debug="true" source="1.6"
+            <javac srcdir="${src/java}" destdir="${build/main}" debug="true" source="1.7"
                    classpathref="main-dependencies" includeantruntime="false"/>
         </sequential>
     </target>
@@ -41,7 +41,7 @@
     <target name="compile-test-acceptance" depends="compile-java">
         <sequential>
             <mkdir dir="${build/test-acceptance}"/>
-            <javac srcdir="${src/test-acceptance}" destdir="${build/test-acceptance}" debug="true" source="1.6"
+            <javac srcdir="${src/test-acceptance}" destdir="${build/test-acceptance}" debug="true" source="1.7"
                    classpathref="test-dependencies" includeantruntime="false"/>
         </sequential>
     </target>
@@ -90,20 +90,20 @@
                     <copy file="down/jetty-6.1.26/lib/servlet-api-2.5-20081211.jar" todir="libs/jetty"/>
                 </sequential>
                 <sequential>
-                    <get src="http://apache.mirror.rbftpnetworks.com//httpcomponents/httpclient/binary/httpcomponents-client-4.2.1-bin.zip"
+                    <get src="http://apache.mirrors.timporter.net//httpcomponents/httpclient/binary/httpcomponents-client-4.2.2-bin.zip"
                          dest="down/" skipexisting="true"/>
-                    <unzip src="down/httpcomponents-client-4.2.1-bin.zip" dest="down/" overwrite="false"/>
-                    <copy file="down/httpcomponents-client-4.2.1/lib/httpclient-4.2.1.jar" todir="test-libs"/>
-                    <copy file="down/httpcomponents-client-4.2.1/lib/httpcore-4.2.1.jar" todir="test-libs"/>
-                    <copy file="down/httpcomponents-client-4.2.1/lib/commons-logging-1.1.1.jar" todir="test-libs"/>
+                    <unzip src="down/httpcomponents-client-4.2.2-bin.zip" dest="down/" overwrite="false"/>
+                    <copy file="down/httpcomponents-client-4.2.2/lib/httpclient-4.2.2.jar" todir="test-libs"/>
+                    <copy file="down/httpcomponents-client-4.2.2/lib/httpcore-4.2.2.jar" todir="test-libs"/>
+                    <copy file="down/httpcomponents-client-4.2.2/lib/commons-logging-1.1.1.jar" todir="test-libs"/>
 
                     <!-- sources from maven central -->
-                    <get src="http://search.maven.org/remotecontent?filepath=org/apache/httpcomponents/httpclient/4.2.1/httpclient-4.2.1-sources.jar"
-                         dest="down/httpclient-4.2.1-sources.jar" skipexisting="true"/>
-                    <copy file="down/httpclient-4.2.1-sources.jar" todir="test-libs" />
-                    <get src="http://search.maven.org/remotecontent?filepath=org/apache/httpcomponents/httpcore/4.2.1/httpcore-4.2.1-sources.jar"
-                         dest="down/httpcore-4.2.1-sources.jar" skipexisting="true" />
-                    <copy file="down/httpcore-4.2.1-sources.jar" todir="test-libs" />
+                    <get src="http://search.maven.org/remotecontent?filepath=org/apache/httpcomponents/httpclient/4.2.2/httpclient-4.2.2-sources.jar"
+                         dest="down/httpclient-4.2.2-sources.jar" skipexisting="true"/>
+                    <copy file="down/httpclient-4.2.2-sources.jar" todir="test-libs" />
+                    <get src="http://search.maven.org/remotecontent?filepath=org/apache/httpcomponents/httpcore/4.2.2/httpcore-4.2.2-sources.jar"
+                         dest="down/httpcore-4.2.2-sources.jar" skipexisting="true" />
+                    <copy file="down/httpcore-4.2.2-sources.jar" todir="test-libs" />
                 </sequential>
                 <sequential>
                     <get src="http://cloud.github.com/downloads/KentBeck/junit/junit-dep-4.10.jar" dest="down/" skipexisting="true"/>
